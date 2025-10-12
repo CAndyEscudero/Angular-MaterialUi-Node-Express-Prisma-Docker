@@ -1,21 +1,24 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
-import { AppRoutingModule } from './app-routing.module';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 import { AppComponent } from './app.component';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { EstudiantesComponent } from './estudiantes/estudiantesPage.component';
+import { pageComponent } from './admin/pageAdmin.component';
+
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    EstudiantesComponent,
+    pageComponent,
+    
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
-  ],
-  providers: [
-    provideAnimationsAsync()
+    MatCardModule,
+    MatButtonModule
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
