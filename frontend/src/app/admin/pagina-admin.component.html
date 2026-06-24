@@ -1,0 +1,355 @@
+<div class="dashboard-shell">
+  <!-- Backdrop for mobile -->
+  <div class="sidebar-backdrop" [class.visible]="menuOpen" (click)="menuOpen = false"></div>
+
+  <!-- Sidebar (light) -->
+  <aside class="sidebar sidebar-admin" [class.sidebar--open]="menuOpen">
+    <div class="sidebar-brand">
+      <img src="/logo.png" alt="Logo" class="sidebar-logo" />
+      <span class="sidebar-brand-text">Admin Panel</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">MENÚ</div>
+
+      <a class="nav-item" [class.active]="seccionActiva === 'dashboard'" (click)="seccionActiva = 'dashboard'">
+        <span class="material-symbols-outlined nav-icon">home</span>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a class="nav-item" [class.active]="seccionActiva === 'usuarios'" (click)="seccionActiva = 'usuarios'">
+        <span class="material-symbols-outlined nav-icon">group</span>
+        <span class="nav-label">Usuarios</span>
+      </a>
+      <a class="nav-item" [class.active]="seccionActiva === 'materias'" (click)="seccionActiva = 'materias'">
+        <span class="material-symbols-outlined nav-icon">book</span>
+        <span class="nav-label">Materias</span>
+      </a>
+      <a class="nav-item" [class.active]="seccionActiva === 'carreras'" (click)="seccionActiva = 'carreras'">
+        <span class="material-symbols-outlined nav-icon">school</span>
+        <span class="nav-label">Carreras</span>
+      </a>
+      <a class="nav-item" [class.active]="seccionActiva === 'inscripciones-carrera'" (click)="seccionActiva = 'inscripciones-carrera'">
+        <span class="material-symbols-outlined nav-icon">how_to_reg</span>
+        <span class="nav-label">Solicitudes de Carrera</span>
+      </a>
+      <a class="nav-item" [class.active]="seccionActiva === 'periodos'" (click)="seccionActiva = 'periodos'">
+        <span class="material-symbols-outlined nav-icon">calendar_month</span>
+        <span class="nav-label">Períodos</span>
+      </a>
+      <a class="nav-item" [class.active]="seccionActiva === 'examenes'" (click)="seccionActiva = 'examenes'">
+        <span class="material-symbols-outlined nav-icon">quiz</span>
+        <span class="nav-label">Exámenes</span>
+      </a>
+      <a class="nav-item" [class.active]="seccionActiva === 'anuncios'" (click)="seccionActiva = 'anuncios'">
+        <span class="material-symbols-outlined nav-icon">campaign</span>
+        <span class="nav-label">Anuncios</span>
+      </a>
+
+      <div class="sidebar-section-title">OTRO</div>
+
+      <a class="nav-item" [class.active]="seccionActiva === 'configuracion'" (click)="seccionActiva = 'configuracion'">
+        <span class="material-symbols-outlined nav-icon">settings</span>
+        <span class="nav-label">Configuración</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a class="nav-item sidebar-theme-item" (click)="toggleTheme()" [title]="isDark ? 'Modo claro' : 'Modo oscuro'">
+        <span class="material-symbols-outlined nav-icon">{{ isDark ? 'light_mode' : 'dark_mode' }}</span>
+        <span class="nav-label">{{ isDark ? 'Modo claro' : 'Modo oscuro' }}</span>
+      </a>
+      <a class="nav-item logout" (click)="cerrarSesion()">
+        <span class="material-symbols-outlined nav-icon">logout</span>
+        <span class="nav-label">Cerrar Sesión</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main area -->
+  <div class="main-area">
+    <!-- Top header -->
+    <header class="top-header">
+      <div style="display: flex; align-items: center;">
+        <button class="mobile-hamburger" (click)="toggleMenu()" title="Menú">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+      </div>
+
+      <div class="header-actions">
+        <div style="position: relative;">
+          <button class="header-icon-btn" title="Notificaciones" (click)="togglePanelNotifs(); $event.stopPropagation()">
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="notif-badge" *ngIf="notifsNoLeidas > 0">{{ notifsNoLeidas > 99 ? '99+' : notifsNoLeidas }}</span>
+          </button>
+          <app-panel-notificaciones *ngIf="panelNotifsAbierto"></app-panel-notificaciones>
+        </div>
+        <button class="header-icon-btn" title="Mensajes">
+          <span class="material-symbols-outlined">mail</span>
+        </button>
+        <div class="header-user">
+          <img src="/avatar.png" alt="Avatar" class="header-avatar" />
+          <span class="header-user-name">Admin</span>
+          <span class="user-badge admin-badge">Administrador</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="content-area">
+      <!-- Dashboard -->
+      <section *ngIf="seccionActiva === 'dashboard'" class="content-section" aria-label="Panel de Administración">
+        <h1 class="sr-only">Panel de Administración</h1>
+        <!-- Period status banner -->
+        <div class="period-banner" *ngIf="periodoStatus" [class.period-open]="periodoStatus.abierto" [class.period-closed]="!periodoStatus.abierto">
+          <div class="period-banner-icon">
+            <span class="material-symbols-outlined">campaign</span>
+          </div>
+          <div class="period-banner-content">
+            <span class="period-banner-title">
+              {{ periodoStatus.abierto ? 'Inscripción abierta' : 'Inscripción cerrada' }}
+            </span>
+            <span class="period-banner-sub" *ngIf="periodoStatus.periodo">
+              {{ periodoStatus.periodo.nombre }} · {{ periodoStatus.periodo.fecha_inicio | date:'dd/MM/yyyy' }} - {{ periodoStatus.periodo.fecha_fin | date:'dd/MM/yyyy' }}
+            </span>
+            <span class="period-banner-sub" *ngIf="!periodoStatus.periodo">
+              {{ periodoStatus.mensaje || 'No hay período de inscripción configurado' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Stats cards -->
+        <div class="quick-stats">
+          <app-dashboard-stat-card
+            *ngFor="let stat of stats"
+            [icon]="stat.icon"
+            [value]="stat.value"
+            [label]="stat.label"
+            [variant]="stat.variant"
+            [clickable]="!!stat.action"
+            (click)="stat.action ? stat.action() : null"
+          ></app-dashboard-stat-card>
+        </div>
+
+        <!-- Two-column layout -->
+        <div class="dashboard-grid">
+          <div class="left-column">
+            <div class="info-panel">
+              <div class="info-panel-header">
+                <h3>Usuarios Recientes</h3>
+                <a class="see-all" (click)="seccionActiva = 'usuarios'">Ver todos</a>
+              </div>
+              <div class="info-panel-item" *ngFor="let user of usuariosRecientes">
+                <div class="info-panel-item-icon" [style.background]="user.rol === 'admin' ? 'var(--pastel-lavender)' : user.rol === 'profesor' ? 'var(--pastel-blue)' : 'var(--pastel-green)'">
+                  <span class="material-symbols-outlined">person</span>
+                </div>
+                <div class="info-panel-item-content">
+                  <p class="info-panel-item-title">{{ user.nombre }}</p>
+                  <p class="info-panel-item-sub">
+                    <span class="user-email-trunc">{{ user.email }}</span>
+                    <span class="role-badge" [class.admin]="user.rol === 'admin'" [class.profesor]="user.rol === 'profesor'" [class.alumno]="user.rol === 'alumno'">{{ user.rol === 'admin' ? 'Admin' : user.rol === 'profesor' ? 'Prof' : 'Alumno' }}</span>
+                  </p>
+                </div>
+              </div>
+              <div class="info-panel-item" *ngIf="usuariosRecientes.length === 0">
+                <p class="info-panel-item-sub">No hay usuarios registrados.</p>
+              </div>
+            </div>
+
+            <div class="info-panel" style="margin-top: var(--space-md);">
+              <div class="info-panel-header">
+                <h3>Materias Recientes</h3>
+                <a class="see-all" (click)="seccionActiva = 'materias'">Ver todas</a>
+              </div>
+              <div class="info-panel-item" *ngFor="let mat of materiasRecientes">
+                <div class="info-panel-item-icon" style="background: var(--pastel-yellow);">
+                  <span class="material-symbols-outlined">book</span>
+                </div>
+                <div class="info-panel-item-content">
+                  <p class="info-panel-item-title">{{ mat.nombre }}</p>
+                  <p class="info-panel-item-sub">{{ mat.codigo }} · {{ mat.profesor_nombre || 'Sin profesor' }}</p>
+                </div>
+              </div>
+              <div class="info-panel-item" *ngIf="materiasRecientes.length === 0">
+                <p class="info-panel-item-sub">No hay materias registradas.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="right-column">
+            <!-- Pending career applications -->
+            <div class="info-panel">
+              <div class="info-panel-header">
+                <h3>Solicitudes de Carrera Pendientes</h3>
+                <a class="see-all" (click)="seccionActiva = 'inscripciones-carrera'">Ver todas</a>
+              </div>
+              <div class="info-panel-item" *ngFor="let sol of solicitudesPendientes">
+                <div class="info-panel-item-icon" style="background: var(--pastel-orange);">
+                  <span class="material-symbols-outlined">how_to_reg</span>
+                </div>
+                <div class="info-panel-item-content">
+                  <p class="info-panel-item-title">{{ sol.alumno_nombre || 'Alumno #' + sol.alumno_id }}</p>
+                  <p class="info-panel-item-sub">{{ sol.carrera_nombre || 'Carrera #' + sol.carrera_id }} · {{ sol.fecha_solicitud | date:'dd/MM/yyyy' }}</p>
+                </div>
+              </div>
+              <div class="info-panel-item" *ngIf="solicitudesPendientes.length === 0">
+                <p class="info-panel-item-sub">No hay solicitudes pendientes.</p>
+              </div>
+            </div>
+
+            <!-- Stats summary -->
+            <div class="info-panel">
+              <div class="info-panel-header">
+                <h3>Resumen del Sistema</h3>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Carreras</span>
+                <span class="summary-value">{{ totalCarreras }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Solicitudes Pendientes</span>
+                <span class="summary-value">{{ totalSolicitudesPendientes }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Inscripciones a Materias</span>
+                <span class="summary-value">{{ totalInscripcionesMaterias }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Período de Inscripción</span>
+                <span class="summary-value" [class.text-green]="periodoStatus?.abierto" [class.text-red]="!periodoStatus?.abierto">
+                  {{ periodoStatus?.abierto ? 'Abierto' : 'Cerrado' }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Calendar -->
+            <div class="info-panel">
+              <div class="mini-calendar">
+                <div class="calendar-header">
+                  <span>{{ mesActual }} {{ anioActual }}</span>
+                  <div>
+                    <button class="calendar-nav-btn" (click)="mesAnterior()">‹</button>
+                    <button class="calendar-nav-btn" (click)="mesSiguiente()">›</button>
+                  </div>
+                </div>
+                <div class="calendar-weekdays">
+                  <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+                </div>
+                <div class="calendar-days">
+                  <div class="calendar-day" *ngFor="let d of diasCalendario" [class.today]="d.esHoy" [class.other-month]="d.esOtroMes">{{ d.numero }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Announcements (dynamic) -->
+            <app-anuncios-recientes></app-anuncios-recientes>
+          </div>
+        </div>
+      </section>
+
+      <!-- Usuarios -->
+      <section *ngIf="seccionActiva === 'usuarios'" class="content-section">
+        <app-lista-usuarios [filtroRol]="filtroUsuarios"></app-lista-usuarios>
+      </section>
+
+      <!-- Materias -->
+      <section *ngIf="seccionActiva === 'materias'" class="content-section">
+        <app-lista-materias></app-lista-materias>
+      </section>
+
+      <!-- Carreras -->
+      <section *ngIf="seccionActiva === 'carreras'" class="content-section">
+        <app-lista-carreras></app-lista-carreras>
+      </section>
+
+      <!-- Solicitudes de Carrera -->
+      <section *ngIf="seccionActiva === 'inscripciones-carrera'" class="content-section">
+        <app-solicitudes-carrera></app-solicitudes-carrera>
+      </section>
+
+      <!-- Períodos de Inscripción -->
+      <section *ngIf="seccionActiva === 'periodos'" class="content-section">
+        <app-lista-periodos></app-lista-periodos>
+      </section>
+
+      <!-- Exámenes (admin - read only) -->
+      <section *ngIf="seccionActiva === 'examenes'" class="content-section">
+        <div class="section-header">
+          <h2>Exámenes del Sistema</h2>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="styled-table" *ngIf="todosExamenes.length > 0">
+            <thead>
+              <tr>
+                <th>Materia</th>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Aula</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ex of todosExamenes">
+                <td class="cell-name">{{ ex.materia_nombre }}</td>
+                <td>{{ ex.nombre }}</td>
+                <td><span class="tipo-badge">{{ ex.tipo }}</span></td>
+                <td>{{ ex.fecha | date:'dd/MM/yyyy' }}</td>
+                <td>{{ ex.hora || '—' }}</td>
+                <td>{{ ex.aula || '—' }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="empty-state" *ngIf="todosExamenes.length === 0">
+            <p>No hay exámenes registrados en el sistema.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Anuncios (CRUD admin) -->
+      <section *ngIf="seccionActiva === 'anuncios'" class="content-section">
+        <app-lista-anuncios></app-lista-anuncios>
+      </section>
+
+      <!-- Configuración -->
+      <section *ngIf="seccionActiva === 'configuracion'" class="content-section">
+        <h2 style="margin-bottom: 20px; font-size: 18px; font-weight: 600; color: var(--text-primary, #1e293b);">Configuración del Sistema</h2>
+
+        <div class="config-card">
+          <h3 style="margin-bottom: 16px; font-size: 16px; font-weight: 600; color: var(--text-primary, #1e293b);">Apariencia</h3>
+          <div class="config-row">
+            <span>Modo Oscuro</span>
+            <label class="toggle-switch">
+              <input type="checkbox" [checked]="isDark" (change)="toggleTheme()" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="config-card">
+          <h3 style="margin-bottom: 16px; font-size: 16px; font-weight: 600; color: var(--text-primary, #1e293b);">Información del Sistema</h3>
+          <div class="config-row">
+            <span>Versión</span>
+            <span style="font-weight: 500;">1.0.0</span>
+          </div>
+          <div class="config-row">
+            <span>Base de Datos</span>
+            <span style="color: var(--pastel-green, #16a34a); font-weight: 500;">Conectada</span>
+          </div>
+          <div class="config-row">
+            <span>Total Usuarios</span>
+            <span style="font-weight: 500;">{{ totalUsuarios }}</span>
+          </div>
+          <div class="config-row">
+            <span>Total Materias</span>
+            <span style="font-weight: 500;">{{ totalMaterias }}</span>
+          </div>
+          <div class="config-row">
+            <span>Total Carreras</span>
+            <span style="font-weight: 500;">{{ totalCarreras }}</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>

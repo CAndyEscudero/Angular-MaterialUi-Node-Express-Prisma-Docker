@@ -1,0 +1,34 @@
+<div class="section-header">
+  <h2>Gestión de Anuncios</h2>
+  <button class="btn-primary" (click)="toggleForm()" *ngIf="!mostrarFormulario">
+    + Nuevo Anuncio
+  </button>
+</div>
+
+<!-- Feedback messages -->
+<div class="alert alert-error" *ngIf="mensajeError">
+  <span class="material-symbols-outlined">error</span>
+  {{ mensajeError }}
+</div>
+<div class="alert alert-success" *ngIf="mensajeExito">
+  <span class="material-symbols-outlined">check_circle</span>
+  {{ mensajeExito }}
+</div>
+
+<!-- Form -->
+<app-formulario-anuncio
+  *ngIf="mostrarFormulario"
+  [modelo]="modeloFormulario"
+  [editandoId]="editandoId"
+  (guardar)="guardar()"
+  (cancelar)="toggleForm()"
+></app-formulario-anuncio>
+
+<!-- Table -->
+<app-tabla-anuncios
+  [anuncios]="anuncios"
+  (editar)="editarAnuncio($event)"
+  (publicar)="publicarAnuncio($event)"
+  (archivar)="archivarAnuncio($event)"
+  (eliminar)="confirmarEliminar($event)"
+></app-tabla-anuncios>

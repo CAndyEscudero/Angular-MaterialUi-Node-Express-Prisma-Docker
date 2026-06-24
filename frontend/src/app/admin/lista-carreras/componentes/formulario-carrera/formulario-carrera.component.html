@@ -1,0 +1,50 @@
+<div class="create-form">
+  <h3>{{ editandoId ? 'Editar Carrera' : 'Crear Carrera' }}</h3>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="car-nombre">Nombre</label>
+      <input
+        id="car-nombre"
+        type="text"
+        [(ngModel)]="modelo.nombre"
+        placeholder="Ej: Ingeniería en Sistemas"
+      />
+    </div>
+    <div class="form-group">
+      <label for="car-codigo">Código</label>
+      <input
+        id="car-codigo"
+        type="text"
+        [(ngModel)]="modelo.codigo"
+        placeholder="Ej: ING-SIS"
+      />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="car-duracion">Duración (años)</label>
+      <input
+        id="car-duracion"
+        type="number"
+        min="1"
+        max="7"
+        [(ngModel)]="modelo.duracion_anios"
+      />
+    </div>
+  </div>
+  <div class="form-row form-row-full">
+    <div class="form-group">
+      <label for="car-descripcion">Descripción</label>
+      <textarea
+        id="car-descripcion"
+        [(ngModel)]="modelo.descripcion"
+        placeholder="Descripción de la carrera..."
+        rows="3"
+      ></textarea>
+    </div>
+  </div>
+  <p class="error-msg" *ngIf="mensajeError">{{ mensajeError }}</p>
+  <button class="btn btn-primary" (click)="guardar.emit()">
+    {{ editandoId ? 'Actualizar' : 'Guardar' }}
+  </button>
+</div>

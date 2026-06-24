@@ -1,0 +1,70 @@
+<div class="materias-disponibles">
+  <div class="section-header">
+    <h2>Materias Disponibles</h2>
+  </div>
+
+  <!-- Enrollment period banner -->
+  <div class="periodo-banner" *ngIf="periodoStatus">
+    <div class="periodo-info" *ngIf="periodoAbierto">
+      <span class="periodo-indicador activo"></span>
+      <span><strong>Período abierto:</strong> {{ periodoNombre }} ({{ periodoFechas }})</span>
+    </div>
+    <div class="periodo-info periodo-cerrado" *ngIf="!periodoAbierto">
+      <span class="periodo-indicador inactivo"></span>
+      <span><strong>Inscripciones cerradas.</strong> {{ periodoStatus.mensaje }}</span>
+    </div>
+  </div>
+
+  <div class="alert alert-success" *ngIf="mensajeExito">{{ mensajeExito }}</div>
+  <div class="alert alert-error" *ngIf="mensajeError">{{ mensajeError }}</div>
+
+  <div class="table-wrapper">
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Materia</th>
+          <th>Código</th>
+          <th>Profesor</th>
+          <th>Correlativas</th>
+          <th>Cupo</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let mat of materiasDisponibles">
+          <td>{{ mat.nombre }}</td>
+          <td>{{ mat.codigo }}</td>
+          <td>{{ mat.profesor_nombre }}</td>
+          <td>
+            <span *ngIf="mat.correlativas && mat.correlativas.length > 0; else sinCorr">
+              <span *ngFor="let corr of mat.correlativas; let last = last">
+                {{ corr.codigo }}<sup [title]="corr.tipo === 'analitica' ? 'Aprobada' : 'Regular'">{{ corr.tipo === 'analitica' ? 'A' : 'R' }}</sup>{{ last ? '' : ', ' }}
+              </span>
+            </span>
+            <ng-template #sinCorr><span class="sin-correlativas">—</span></ng-template>
+          </td>
+          <td>
+            <span *ngIf="mat.cupos_disponibles !== null && mat.cupos_disponibles !== undefined; else ilimitado">
+              {{ mat.inscriptos_count }} / {{ mat.cupo_maximo }}
+              <span *ngIf="mat.cupos_disponibles <= 0" class="cupo-lleno">(completo)</span>
+            </span>
+            <ng-template #ilimitado><span class="cupo-ilimitado">Sin cupo</span></ng-template>
+          </td>
+          <td>
+            <button class="btn btn-primary btn-sm"
+                    (click)="inscribir(mat.id)"
+                    [disabled]="!periodoAbierto || idInscribiendo === mat.id || (mat.cupos_disponibles !== null && mat.cupos_disponibles !== undefined && mat.cupos_disponibles <= 0)"
+                    [title]="!periodoAbierto ? 'No hay un período de inscripción abierto' : ''">
+              {{ getBotonTexto(mat) }}
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="materiasDisponibles.length === 0">
+          <td colspan="6" class="empty-state">
+            No hay materias disponibles. ¡Ya estás inscripto en todas!
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

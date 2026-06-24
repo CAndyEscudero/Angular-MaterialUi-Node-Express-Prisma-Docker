@@ -1,0 +1,132 @@
+<div class="modal-overlay" (click)="onCerrar()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Detalle de Solicitud #{{ solicitud?.id }}</h3>
+      <button class="modal-close" (click)="onCerrar()">&times;</button>
+    </div>
+
+    <div class="modal-body" *ngIf="solicitud">
+      <!-- ── Application details ── -->
+      <div class="detail-section">
+        <div class="detail-row">
+          <span class="detail-label">Alumno:</span>
+          <span class="detail-value">{{ solicitud.alumno_nombre }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Email:</span>
+          <span class="detail-value">{{ solicitud.alumno_email }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Legajo:</span>
+          <span class="detail-value">{{ solicitud.alumno_legajo || '—' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Carrera:</span>
+          <span class="detail-value">{{ solicitud.carrera_nombre }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Estado:</span>
+          <span class="status-badge" [class]="badgeClass(solicitud.estado)">
+            {{ label(solicitud.estado) }}
+          </span>
+        </div>
+        <div class="detail-row" *ngIf="solicitud.motivo_rechazo">
+          <span class="detail-label">Motivo rechazo:</span>
+          <span class="detail-value motivo">{{ solicitud.motivo_rechazo }}</span>
+        </div>
+      </div>
+
+      <!-- ── Documents ── -->
+      <div class="detail-section">
+        <h4>Documentos Adjuntos</h4>
+        <div
+          class="doc-item"
+          *ngFor="let doc of solicitud.documentos"
+        >
+          <div class="doc-meta">
+            <span class="doc-tipo">{{ doc.tipo_documento.replace('_', ' ') }}</span>
+            <span class="doc-size">{{ formatoBytes(doc.tamanio_bytes) }}</span>
+          </div>
+          <button
+            class="btn btn-outline btn-sm"
+            type="button"
+            (click)="verDocumento.emit(doc.id)"
+          >
+            Ver
+          </button>
+        </div>
+        <p class="no-docs" *ngIf="!solicitud.documentos?.length">
+          Sin documentos adjuntos.
+        </p>
+      </div>
+
+      <!-- ── Review actions (pending only) ── -->
+      <div
+        class="detail-section review-actions"
+        *ngIf="solicitud.estado === 'pendiente'"
+      >
+        <h4>Revisar Solicitud</h4>
+
+        <!-- Approve confirmation step -->
+        <div class="confirmacion" *ngIf="accionRevisar === 'aprobada'">
+          <p class="confirm-msg">¿Estás seguro de aprobar esta solicitud?</p>
+          <div class="confirm-buttons">
+            <button class="btn btn-outline" (click)="cancelarRevision()">
+              Cancelar
+            </button>
+            <button
+              class="btn btn-success"
+              (click)="ejecutarRevision()"
+              [disabled]="loading"
+            >
+              {{ loading ? 'Procesando...' : 'Confirmar Aprobación' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Reject form with reason -->
+        <div class="rechazo-form" *ngIf="accionRevisar === 'rechazada'">
+          <div class="form-group">
+            <label for="motivo-rechazo">Motivo de rechazo *</label>
+            <textarea
+              id="motivo-rechazo"
+              [(ngModel)]="motivoRechazo"
+              rows="3"
+              placeholder="Indicá el motivo por el cual se rechaza la solicitud..."
+              class="form-textarea"
+            ></textarea>
+          </div>
+          <div class="confirm-buttons">
+            <button class="btn btn-outline" (click)="cancelarRevision()">
+              Cancelar
+            </button>
+            <button
+              class="btn btn-danger"
+              (click)="ejecutarRevision()"
+              [disabled]="loading"
+            >
+              {{ loading ? 'Procesando...' : 'Confirmar Rechazo' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Initial action buttons -->
+        <div class="action-buttons" *ngIf="!accionRevisar">
+          <button class="btn btn-success" (click)="confirmarAprobacion()">
+            Aprobar
+          </button>
+          <button class="btn btn-danger" (click)="confirmarRechazo()">
+            Rechazar
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Already reviewed ── -->
+      <div class="detail-section" *ngIf="solicitud.estado !== 'pendiente'">
+        <p class="ya-revisado">
+          Esta solicitud ya fue {{ label(solicitud.estado).toLowerCase() }}.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

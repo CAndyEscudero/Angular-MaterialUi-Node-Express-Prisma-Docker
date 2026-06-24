@@ -1,0 +1,39 @@
+<div class="mis-inscripciones">
+  <div class="section-header">
+    <h2>Mis Inscripciones</h2>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Materia</th>
+          <th>Código</th>
+          <th>Nota</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let inc of inscripciones">
+          <td>{{ inc.materia_nombre }}</td>
+          <td>{{ inc.materia_codigo }}</td>
+          <td>
+            <span class="grade" [class.pending]="inc.nota === null">
+              {{ inc.nota !== null ? inc.nota : 'Pendiente' }}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-danger btn-sm" (click)="confirmarCancelar(inc)" [disabled]="idCancelando === inc.id">
+              {{ idCancelando === inc.id ? 'Cancelando...' : 'Cancelar Inscripción' }}
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="inscripciones.length === 0">
+          <td colspan="4" class="empty-state">
+            No estás inscripto en ninguna materia.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

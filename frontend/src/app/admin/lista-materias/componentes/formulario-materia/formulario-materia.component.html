@@ -1,0 +1,162 @@
+<div class="create-form">
+  <h3>{{ editandoId ? 'Editar Materia' : 'Crear Materia' }}</h3>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="mat-nombre">Nombre</label>
+      <input
+        id="mat-nombre"
+        type="text"
+        [(ngModel)]="modelo.nombre"
+        placeholder="Ej: Álgebra Lineal"
+      />
+    </div>
+    <div class="form-group">
+      <label for="mat-codigo">Código</label>
+      <input
+        id="mat-codigo"
+        type="text"
+        [(ngModel)]="modelo.codigo"
+        placeholder="Ej: ALG-101"
+      />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="mat-profesor">Profesor</label>
+      <select id="mat-profesor" [(ngModel)]="modelo.profesor_id">
+        <option [value]="0" disabled>Seleccione un profesor</option>
+        <option *ngFor="let prof of profesores" [value]="prof.usuario_id">
+          {{ prof.nombre }}
+        </option>
+      </select>
+      <p class="form-hint" *ngIf="cargandoProfesores">Cargando profesores...</p>
+    </div>
+    <div class="form-group">
+      <label for="mat-carrera">Carrera</label>
+      <select id="mat-carrera" [(ngModel)]="modelo.carrera_id">
+        <option [value]="0">Sin carrera</option>
+        <option *ngFor="let carrera of carreras" [value]="carrera.id">
+          {{ carrera.nombre }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="mat-cuatrimestre">Cuatrimestre</label>
+      <select id="mat-cuatrimestre" [(ngModel)]="modelo.cuatrimestre">
+        <option value="">Seleccione</option>
+        <option value="1">Primer Cuatrimestre</option>
+        <option value="2">Segundo Cuatrimestre</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="mat-anio">Año Académico</label>
+      <input
+        id="mat-anio"
+        type="number"
+        [(ngModel)]="modelo.anio"
+        min="2020"
+        max="2030"
+      />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="mat-modalidad">Modalidad</label>
+      <select id="mat-modalidad" [(ngModel)]="modelo.modalidad">
+        <option value="presencial">Presencial</option>
+        <option value="virtual">Virtual</option>
+        <option value="hibrida">Híbrida</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="mat-estado">Estado</label>
+      <select id="mat-estado" [(ngModel)]="modelo.estado">
+        <option value="activa">Activa</option>
+        <option value="inactiva">Inactiva</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="mat-horario">Día y Horario</label>
+      <input
+        id="mat-horario"
+        type="text"
+        [(ngModel)]="modelo.dia_horario"
+        placeholder="Ej: Lun 14-16, Mié 14-16"
+      />
+    </div>
+    <div class="form-group">
+      <label for="mat-aula">Aula</label>
+      <input
+        id="mat-aula"
+        type="text"
+        [(ngModel)]="modelo.aula"
+        placeholder="Ej: Aula 203"
+      />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="mat-cupo">Cupo Máximo</label>
+      <input
+        id="mat-cupo"
+        type="number"
+        [(ngModel)]="modelo.cupo_maximo"
+        min="0"
+        placeholder="Ej: 40"
+      />
+    </div>
+    <div class="form-group">
+      <label for="mat-creditos">Créditos</label>
+      <input
+        id="mat-creditos"
+        type="number"
+        [(ngModel)]="modelo.creditos"
+        min="0"
+        max="99"
+        placeholder="Ej: 4"
+      />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="mat-anio-carrera">Año de la Carrera</label>
+      <select id="mat-anio-carrera" [(ngModel)]="modelo.anio_carrera">
+        <option [value]="0">Seleccione</option>
+        <option [value]="1">1° año</option>
+        <option [value]="2">2° año</option>
+        <option [value]="3">3° año</option>
+        <option [value]="4">4° año</option>
+        <option [value]="5">5° año</option>
+        <option [value]="6">6° año</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row form-row-full">
+    <div class="form-group">
+      <label for="mat-descripcion">Descripción</label>
+      <textarea
+        id="mat-descripcion"
+        [(ngModel)]="modelo.descripcion"
+        placeholder="Descripción de la materia..."
+        rows="3"
+      ></textarea>
+    </div>
+  </div>
+
+  <p class="error-msg" *ngIf="mensajeError">{{ mensajeError }}</p>
+  <button class="btn btn-primary" (click)="guardar.emit()">
+    {{ editandoId ? 'Actualizar' : 'Guardar' }}
+  </button>
+</div>

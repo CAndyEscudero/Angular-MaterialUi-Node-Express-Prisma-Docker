@@ -1,24 +1,22 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
-import { EstudiantesComponent } from './estudiantes/estudiantesPage.component';
-import { pageComponent } from './admin/pageAdmin.component';
-
+import { AppRoutingModule } from './app-routing.module';
+import { InterceptorAutenticacion } from './autenticacion/interceptor-autenticacion';
 
 @NgModule({
   declarations: [
     AppComponent,
-    EstudiantesComponent,
-    pageComponent,
-    
   ],
   imports: [
     BrowserModule,
-    MatCardModule,
-    MatButtonModule
+    HttpClientModule,
+    AppRoutingModule,
   ],
-  bootstrap: [AppComponent]
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: InterceptorAutenticacion, multi: true },
+  ],
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

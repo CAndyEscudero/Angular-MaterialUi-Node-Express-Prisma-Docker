@@ -1,0 +1,49 @@
+<div class="notif-panel" (click)="$event.stopPropagation()">
+  <div class="notif-panel-header">
+    <h3 class="notif-panel-title">Notificaciones</h3>
+    <button
+      class="notif-mark-all"
+      *ngIf="noLeidas > 0"
+      (click)="marcarTodasLeidas()"
+    >
+      Marcar todas como leídas
+    </button>
+  </div>
+
+  <div class="notif-panel-body">
+    <!-- Loading -->
+    <div class="notif-empty" *ngIf="cargando">
+      Cargando...
+    </div>
+
+    <!-- Error state -->
+    <div class="notif-empty" *ngIf="!cargando && error">
+      <span class="material-symbols-outlined notif-empty-icon">error_outline</span>
+      <p>Error al cargar notificaciones</p>
+    </div>
+
+    <!-- Empty state -->
+    <div class="notif-empty" *ngIf="!cargando && !error && notificaciones.length === 0">
+      <span class="material-symbols-outlined notif-empty-icon">notifications_off</span>
+      <p>No tenés notificaciones</p>
+    </div>
+
+    <!-- List -->
+    <div
+      class="notif-item"
+      *ngFor="let notif of notificaciones"
+      [class.notif-item--unread]="!notif.leida"
+      (click)="marcarLeida(notif)"
+    >
+      <div class="notif-item-icon" [class.notif-icon-read]="notif.leida">
+        <span class="material-symbols-outlined">{{ getTipoIcon(notif.tipo) }}</span>
+      </div>
+      <div class="notif-item-content">
+        <p class="notif-item-title">{{ notif.titulo }}</p>
+        <p class="notif-item-message" *ngIf="notif.mensaje">{{ notif.mensaje }}</p>
+        <span class="notif-item-time">{{ formatearFecha(notif.creada_en) }}</span>
+      </div>
+      <div class="notif-item-dot" *ngIf="!notif.leida"></div>
+    </div>
+  </div>
+</div>

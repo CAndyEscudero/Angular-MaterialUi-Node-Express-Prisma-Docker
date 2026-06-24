@@ -1,0 +1,54 @@
+<!-- Loading -->
+<div class="loading-state" *ngIf="loading">
+  <p>Cargando solicitudes...</p>
+</div>
+
+<!-- Table -->
+<div class="table-wrapper" *ngIf="!loading">
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Alumno</th>
+        <th>Legajo</th>
+        <th>Carrera</th>
+        <th>Estado</th>
+        <th>Fecha Solicitud</th>
+        <th>Documentos</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let sol of solicitudes">
+        <td>{{ sol.id }}</td>
+        <td>
+          <div class="alumno-info">
+            <span class="alumno-nombre">{{ sol.alumno_nombre }}</span>
+            <span class="alumno-email">{{ sol.alumno_email }}</span>
+          </div>
+        </td>
+        <td>{{ sol.alumno_legajo || '—' }}</td>
+        <td>{{ sol.carrera_nombre }}</td>
+        <td>
+          <span class="status-badge" [class]="badgeClass(sol.estado)">
+            {{ label(sol.estado) }}
+          </span>
+        </td>
+        <td>{{ sol.fecha_solicitud | date: 'dd/MM/yyyy' }}</td>
+        <td>
+          <span class="doc-count">{{ sol.documentos?.length || 0 }} archivos</span>
+        </td>
+        <td>
+          <button class="btn btn-outline btn-sm" (click)="seleccionar.emit(sol)">
+            Ver
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="solicitudes.length === 0">
+        <td colspan="8" class="empty-state">
+          No hay solicitudes {{ filtroActivo ? 'con ese estado' : '' }}.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

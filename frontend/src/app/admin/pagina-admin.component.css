@@ -1,0 +1,237 @@
+/* ========================================
+   Admin Page — Light Sidebar + Pastel Theme
+   ======================================== */
+
+/* Badge */
+.admin-badge {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+/* Dashboard stat icons for admin */
+.stat-pastel-lavender .stat-icon-wrapper {
+  background: rgba(109, 40, 217, 0.12);
+}
+.stat-pastel-yellow .stat-icon-wrapper {
+  background: rgba(161, 98, 7, 0.12);
+}
+.stat-pastel-blue .stat-icon-wrapper {
+  background: rgba(29, 78, 216, 0.12);
+}
+.stat-pastel-pink .stat-icon-wrapper {
+  background: rgba(190, 24, 93, 0.12);
+}
+
+/* Period status banner */
+.period-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+
+.period-banner.period-open {
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  color: #065f46;
+}
+
+.period-banner.period-closed {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.period-banner-icon img {
+  width: 24px;
+  height: 24px;
+}
+
+.period-banner-icon .material-symbols-outlined {
+  font-size: 24px;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.period-banner-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.period-banner-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.period-banner-sub {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* Stat card colors */
+.stat-pastel-orange .stat-icon-wrapper {
+  background: rgba(234, 88, 12, 0.12);
+}
+
+.stat-pastel-teal .stat-icon-wrapper {
+  background: rgba(13, 148, 136, 0.12);
+}
+
+/* Summary panel */
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-label {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.summary-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.text-green {
+  color: #16a34a;
+}
+
+.text-red {
+  color: #dc2626;
+}
+
+/* User email truncation */
+.user-email-trunc {
+  display: inline-block;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+@media (max-width: 480px) {
+  .user-email-trunc {
+    max-width: 100px;
+  }
+}
+
+/* Exam styles */
+.tipo-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  background: #f1f5f9;
+  color: #475569;
+  text-transform: capitalize;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 2rem 1rem;
+  font-style: italic;
+}
+
+/* Compact stat cards — override global defaults for admin dashboard */
+.quick-stats {
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-sm);
+}
+
+/* Responsive: match global tablet breakpoint within component scope */
+@media (max-width: 1023px) {
+  .quick-stats {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
+
+/* Responsive: small phones — 2 cols with tighter gap to avoid overflow on 360px */
+@media (max-width: 479px) {
+  .quick-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+}
+
+/* Configuration */
+.config-card {
+  background: var(--white, #ffffff);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border-color, #f1f5f9);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.config-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color, #f1f5f9);
+  font-size: 14px;
+  color: var(--text-primary, #1e293b);
+}
+
+.config-row:last-child {
+  border-bottom: none;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #cbd5e1;
+  border-radius: 24px;
+  transition: background 0.3s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 2px;
+  bottom: 2px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: #6d28d9;
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}

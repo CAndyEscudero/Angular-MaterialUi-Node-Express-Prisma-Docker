@@ -23,7 +23,13 @@ export const verificarToken = (req: Request, res: Response, next: NextFunction) 
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+        const jwtSecret = process.env.JWT_SECRET;
+        if (!jwtSecret) {
+            console.error('JWT_SECRET no configurado');
+            return res.status(500).json({ error: 'Configuración de autenticación incompleta' });
+        }
+
+        const decoded = jwt.verify(token, jwtSecret) as JwtPayload;
         req.usuario = decoded;
         next();
     } catch (error) {
@@ -34,6 +40,13 @@ export const verificarToken = (req: Request, res: Response, next: NextFunction) 
 export const esProfesorOAdmin = (req: Request, res: Response, next: NextFunction) => {
     if (req.usuario?.rol !== 'profesor' && req.usuario?.rol !== 'admin') {
         return res.status(403).json({ error: 'No tienes permisos suficientes' });
+    }
+    next();
+};
+
+export const esAdmin = (req: Request, res: Response, next: NextFunction) => {
+    if (req.usuario?.rol !== 'admin') {
+        return res.status(403).json({ error: 'Acción permitida solo para administradores' });
     }
     next();
 };

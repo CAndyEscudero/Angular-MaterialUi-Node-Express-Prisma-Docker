@@ -1,0 +1,48 @@
+<div class="table-wrapper">
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Código</th>
+        <th>Duración</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let carrera of carreras">
+        <td>{{ carrera.id }}</td>
+        <td>{{ carrera.nombre }}</td>
+        <td>{{ carrera.codigo }}</td>
+        <td>{{ carrera.duracion_anios }} años</td>
+        <td>
+          <span class="status-badge" [class]="badgeClass(carrera.activa)">
+            {{ label(carrera.activa) }}
+          </span>
+        </td>
+        <td>
+          <button
+            class="btn btn-outline btn-sm"
+            (click)="editar.emit(carrera)"
+            title="Editar carrera"
+          >
+            Editar
+          </button>
+          <button
+            class="btn btn-sm"
+            [class.btn-danger]="carrera.activa"
+            [class.btn-primary]="!carrera.activa"
+            (click)="alternarEstado.emit(carrera)"
+            [title]="carrera.activa ? 'Desactivar carrera' : 'Reactivar carrera'"
+          >
+            {{ carrera.activa ? 'Desactivar' : 'Reactivar' }}
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="carreras.length === 0">
+        <td colspan="6" class="empty-state">No hay carreras registradas.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

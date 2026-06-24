@@ -1,0 +1,125 @@
+/* ========================================
+   Estudiantes Page — Light Sidebar + Pastel Theme
+   ======================================== */
+
+/* Badge */
+.alumno-badge {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+/* Profile card */
+.profile-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f1f5f9;
+}
+
+.profile-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-avatar-text {
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.profile-email {
+  font-size: 14px;
+  color: #64748b;
+  margin: 4px 0 0;
+}
+
+.profile-details {
+  display: flex;
+  gap: 32px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.profile-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-detail-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.profile-detail-value {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+/* Stat icon wrappers for estudiante */
+.stat-pastel-green .stat-icon-wrapper {
+  background: rgba(22, 163, 74, 0.12);
+}
+.stat-pastel-blue .stat-icon-wrapper {
+  background: rgba(29, 78, 216, 0.12);
+}
+.stat-pastel-yellow .stat-icon-wrapper {
+  background: rgba(161, 98, 7, 0.12);
+}
+.stat-pastel-pink .stat-icon-wrapper {
+  background: rgba(190, 24, 93, 0.12);
+}
+
+/* Exam styles */
+.tipo-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  background: #f1f5f9;
+  color: #475569;
+  text-transform: capitalize;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 2rem 1rem;
+  font-style: italic;
+}
+
+/* Dark mode profile card */
+[data-theme="dark"] .profile-card {
+  background: #1e293b;
+  border-color: #334155;
+}

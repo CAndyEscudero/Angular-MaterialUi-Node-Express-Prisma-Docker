@@ -1,0 +1,33 @@
+<div class="solicitudes-carrera">
+  <div class="section-header">
+    <h2>Solicitudes de Inscripción a Carreras</h2>
+  </div>
+
+  <!-- Feedback messages -->
+  <div class="alert alert-success" *ngIf="mensajeExito">{{ mensajeExito }}</div>
+  <div class="alert alert-error" *ngIf="mensajeError">{{ mensajeError }}</div>
+
+  <!-- Filter tabs -->
+  <app-filtros-solicitudes
+    [filtroActivo]="filtroEstado"
+    (filtroCambiado)="aplicarFiltro($event)"
+  ></app-filtros-solicitudes>
+
+  <!-- Request list table -->
+  <app-tabla-solicitudes
+    [solicitudes]="solicitudes"
+    [loading]="loading"
+    [filtroActivo]="filtroEstado"
+    (seleccionar)="abrirModal($event)"
+  ></app-tabla-solicitudes>
+
+  <!-- Detail / review modal -->
+  <app-modal-detalle-solicitud
+    *ngIf="solicitudSeleccionada"
+    [solicitud]="solicitudSeleccionada"
+    [loading]="loading"
+    (cerrar)="cerrarModal()"
+    (verDocumento)="onVerDocumento($event)"
+    (revisar)="onRevisar($event)"
+  ></app-modal-detalle-solicitud>
+</div>

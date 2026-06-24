@@ -1,0 +1,48 @@
+<div class="anuncios-section">
+  <div class="anuncios-section-header">
+    <span class="material-symbols-outlined">campaign</span>
+    <h3>Anuncios</h3>
+    <button class="anuncios-ver-todos" (click)="verTodos.emit()" *ngIf="anuncios.length > 0">
+      Ver todos
+      <span class="material-symbols-outlined">arrow_forward</span>
+    </button>
+  </div>
+
+  <!-- Loading state -->
+  <div class="anuncios-state anuncios-state--loading" *ngIf="cargando">
+    <span class="material-symbols-outlined anuncios-state-icon anuncios-spin">sync</span>
+    <span class="anuncios-state-text">Cargando anuncios…</span>
+  </div>
+
+  <!-- Error state -->
+  <div class="anuncios-state anuncios-state--error" *ngIf="error">
+    <span class="material-symbols-outlined anuncios-state-icon">error_outline</span>
+    <span class="anuncios-state-text">No se pudieron cargar los anuncios.</span>
+    <button class="anuncios-retry-btn" (click)="cargarAnuncios()">Reintentar</button>
+  </div>
+
+  <!-- Empty state: carga exitosa sin resultados -->
+  <div class="anuncios-state" *ngIf="!cargando && !error && anuncios.length === 0">
+    <span class="material-symbols-outlined anuncios-state-icon">campaign</span>
+    <span class="anuncios-state-text">No hay anuncios recientes.</span>
+  </div>
+
+  <!-- Cards -->
+  <div class="anuncios-scroll" *ngIf="!cargando && !error && anuncios.length > 0">
+    <div class="anuncio-card" *ngFor="let a of anuncios">
+      <div class="anuncio-card-icon" [class.icon-materia]="a.tipo === 'materia'">
+        <span class="material-symbols-outlined">campaign</span>
+      </div>
+      <div class="anuncio-card-body">
+        <h4 class="anuncio-card-title">{{ a.titulo }}</h4>
+        <p class="anuncio-card-text">{{ truncate(a.contenido) }}</p>
+        <div class="anuncio-card-footer">
+          <span class="anuncio-card-time">{{ tiempoRelativo(a.fecha_publicacion) }}</span>
+          <span class="badge badge--tipo" [class.badge--materia]="a.tipo === 'materia'" *ngIf="a.tipo === 'materia'">
+            Materia
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

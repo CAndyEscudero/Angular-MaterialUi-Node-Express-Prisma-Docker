@@ -47,9 +47,15 @@ export async function loginUsuario(req: Request, res: Response) {
       return res.status(401).json({ error: "Credenciales incorrectas" });
     }
 
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      console.error("JWT_SECRET no configurado");
+      return res.status(500).json({ error: "Configuración de autenticación incompleta" });
+    }
+
     const token = jwt.sign(
       { id: usuario.id, rol: usuario.rol },
-      process.env.JWT_SECRET || "mi_secreto",
+      jwtSecret,
       { expiresIn: "1h" }
     );
 

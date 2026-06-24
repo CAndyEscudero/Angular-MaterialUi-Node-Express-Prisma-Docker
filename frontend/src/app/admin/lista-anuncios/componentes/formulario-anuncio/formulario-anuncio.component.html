@@ -1,0 +1,56 @@
+<div class="create-form">
+  <h3>{{ editando ? 'Editar Anuncio' : 'Nuevo Anuncio' }}</h3>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="anuncio-titulo">Título *</label>
+      <input
+        id="anuncio-titulo"
+        type="text"
+        [(ngModel)]="modelo.titulo"
+        placeholder="Título del anuncio"
+        required
+      />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="anuncio-contenido">Contenido *</label>
+      <textarea
+        id="anuncio-contenido"
+        [(ngModel)]="modelo.contenido"
+        placeholder="Escribí el contenido del anuncio..."
+        rows="4"
+        required
+      ></textarea>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="anuncio-rol">Visible para</label>
+      <select id="anuncio-rol" [(ngModel)]="modelo.rol_destino">
+        <option value="todos">Todos</option>
+        <option value="admin">Administradores</option>
+        <option value="profesor">Profesores</option>
+        <option value="alumno">Alumnos</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="anuncio-estado">Estado</label>
+      <select id="anuncio-estado" [(ngModel)]="modelo.estado">
+        <option value="borrador">Borrador</option>
+        <option value="publicado">Publicado</option>
+        <option value="archivado">Archivado</option>
+      </select>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 8px; margin-top: 16px;">
+    <button type="button" class="btn-outline" (click)="cancelar.emit()">Cancelar</button>
+    <button type="button" class="btn-primary" (click)="guardar.emit()">
+      {{ editando ? 'Guardar Cambios' : 'Crear Anuncio' }}
+    </button>
+  </div>
+</div>

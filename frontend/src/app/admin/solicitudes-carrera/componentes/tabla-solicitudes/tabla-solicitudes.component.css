@@ -1,0 +1,58 @@
+/* ========= Loading state ========= */
+.loading-state {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-secondary);
+}
+
+/* ========= Alumno cell ========= */
+.alumno-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.alumno-nombre {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.alumno-email {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+/* ========= Document count ========= */
+.doc-count {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+/* ========= Status badges ========= */
+.status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-pendiente {
+  background: #fef9c3;
+  color: #a16207;
+}
+
+.status-aprobada {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.status-rechazada {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.status-cancelada {
+  background: #f1f5f9;
+  color: #64748b;
+}

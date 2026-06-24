@@ -1,0 +1,29 @@
+<div class="lista-periodos">
+  <div class="section-header">
+    <h2>Períodos de Inscripción</h2>
+    <button class="btn btn-primary" (click)="toggleForm()">
+      {{ mostrarFormulario ? 'Cancelar' : '+ Nuevo Período' }}
+    </button>
+  </div>
+
+  <!-- Feedback messages -->
+  <div class="alert alert-success" *ngIf="mensajeExito">{{ mensajeExito }}</div>
+
+  <!-- Create / Edit form -->
+  <app-formulario-periodo
+    *ngIf="mostrarFormulario"
+    [periodo]="periodoEditando"
+    [editandoId]="editandoId"
+    [mensajeError]="mensajeError"
+    (guardar)="guardar($event)"
+    (cancelar)="toggleForm()"
+  ></app-formulario-periodo>
+
+  <!-- Periodo list table -->
+  <app-tabla-periodos
+    [periodos]="periodos"
+    (editar)="editarPeriodo($event)"
+    (eliminar)="confirmarEliminar($event)"
+    (toggleActivo)="toggleActivo($event)"
+  ></app-tabla-periodos>
+</div>

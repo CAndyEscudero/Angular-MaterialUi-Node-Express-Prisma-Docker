@@ -1,0 +1,52 @@
+<div class="carga-notas">
+  <div class="section-header">
+    <h2 *ngIf="materiaId">Estudiantes Inscriptos</h2>
+    <h2 *ngIf="!materiaId">Estudiantes Inscriptos</h2>
+  </div>
+
+  <div class="alert alert-error" *ngIf="mensajeError">{{ mensajeError }}</div>
+
+  <div *ngIf="!materiaId" class="empty-state">
+    <p>Seleccioná una materia para ver los estudiantes inscriptos.</p>
+  </div>
+
+  <div class="table-wrapper" *ngIf="materiaId">
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Estudiante</th>
+          <th>Email</th>
+          <th>Carrera</th>
+          <th>Nota</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let estudiante of estudiantes">
+          <td>{{ estudiante.nombre }}</td>
+          <td>{{ estudiante.email }}</td>
+          <td>{{ estudiante.carrera || '—' }}</td>
+          <td>
+            <input
+              type="number"
+              class="grade-input"
+              [(ngModel)]="notaEditando[estudiante.id]"
+              placeholder="—"
+              min="0"
+              max="100"
+              step="0.01"
+            />
+          </td>
+          <td>
+            <button class="btn btn-primary btn-sm" (click)="guardarNota(estudiante.id)" [disabled]="idNotaGuardando === estudiante.id">
+              {{ idNotaGuardando === estudiante.id ? 'Guardando...' : 'Guardar' }}
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="estudiantes.length === 0">
+          <td colspan="5" class="empty-state">No hay estudiantes inscriptos en esta materia.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

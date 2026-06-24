@@ -1,0 +1,10 @@
+.env
+node_modules/
+dist/
+coverage/
+.atl/
+openspec/
+
+# Accidental root-level npm installs; use backend/frontend package files instead.
+/package.json
+/package-lock.json

@@ -1,0 +1,72 @@
+/* ========================================
+   Docentes Page — Light Sidebar + Pastel Theme
+   ======================================== */
+
+/* Badge */
+.profesor-badge {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* Schedule cell accents for docente */
+.schedule-cell.occupied {
+  background: var(--pastel-blue) !important;
+  color: var(--pastel-blue-text) !important;
+}
+
+/* Summary panel */
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-label {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.summary-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.text-green {
+  color: #16a34a;
+}
+
+.text-red {
+  color: #dc2626;
+}
+
+/* Exam styles */
+.tipo-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  background: #f1f5f9;
+  color: #475569;
+  text-transform: capitalize;
+}
+
+.cell-actions {
+  white-space: nowrap;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 2rem 1rem;
+  font-style: italic;
+}
+
+

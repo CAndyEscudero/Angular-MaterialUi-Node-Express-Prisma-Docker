@@ -1,0 +1,66 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: thesis-mysql
+    restart: unless-stopped
+    ports:
+      - "${DB_HOST_PORT:-3309}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASS:-root}
+      MYSQL_DATABASE: ${DB_NAME:-educacion}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./backend/sql/001_init.sql:/docker-entrypoint-initdb.d/001_init.sql
+      - ./backend/sql/002_seed.sql:/docker-entrypoint-initdb.d/002_seed.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - thesis-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: thesis-backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_HOST_PORT:-3010}:3000"
+    env_file:
+      - .env
+    environment:
+      PORT: "3000"
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: ${DB_USER:-root}
+      DB_PASS: ${DB_PASS:-root}
+      DB_NAME: ${DB_NAME:-educacion}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - thesis-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: thesis-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - thesis-net
+
+volumes:
+  mysql-data:
+
+networks:
+  thesis-net:
+    driver: bridge

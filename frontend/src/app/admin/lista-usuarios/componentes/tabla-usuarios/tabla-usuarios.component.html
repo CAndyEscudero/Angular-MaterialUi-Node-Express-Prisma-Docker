@@ -1,0 +1,39 @@
+<div class="table-wrapper">
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Creado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of usuarios">
+        <td>{{ user.id }}</td>
+        <td>{{ user.nombre }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <span class="role-badge" [class]="badgeClass(user.rol)">
+            {{ labelRol(user.rol) }}
+          </span>
+        </td>
+        <td>{{ user.creado_en | date:'short' }}</td>
+        <td>
+          <button
+            class="btn btn-danger btn-sm"
+            (click)="eliminar.emit(user)"
+            title="Eliminar usuario"
+          >
+            Eliminar
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="usuarios.length === 0">
+        <td colspan="6" class="empty-state">No hay usuarios registrados.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

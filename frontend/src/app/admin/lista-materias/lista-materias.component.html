@@ -1,0 +1,31 @@
+<div class="lista-materias">
+  <div class="section-header">
+    <h2>Materias</h2>
+    <button class="btn btn-primary" (click)="toggleForm()">
+      {{ mostrarFormulario ? 'Cancelar' : '+ Nueva Materia' }}
+    </button>
+  </div>
+
+  <!-- Feedback messages -->
+  <div class="alert alert-success" *ngIf="mensajeExito">{{ mensajeExito }}</div>
+
+  <!-- Create / Edit form -->
+  <app-formulario-materia
+    *ngIf="mostrarFormulario"
+    [modelo]="modeloFormulario"
+    [editandoId]="editandoId"
+    [profesores]="profesores"
+    [carreras]="carreras"
+    [cargandoProfesores]="cargandoProfesores"
+    [mensajeError]="mensajeError"
+    (guardar)="guardar()"
+    (cancelar)="toggleForm()"
+  ></app-formulario-materia>
+
+  <!-- Materia list table -->
+  <app-tabla-materias
+    [materias]="materias"
+    (editar)="editarMateria($event)"
+    (eliminar)="confirmarEliminar($event)"
+  ></app-tabla-materias>
+</div>

@@ -1,0 +1,55 @@
+<div class="table-wrapper">
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Código</th>
+        <th>Profesor</th>
+        <th>Carrera</th>
+        <th>Cuatrimestre</th>
+        <th>Modalidad</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let mat of materias">
+        <td>{{ mat.id }}</td>
+        <td>{{ mat.nombre }}</td>
+        <td>{{ mat.codigo }}</td>
+        <td>{{ mat.profesor_nombre }}</td>
+        <td>{{ mat.carrera_nombre || mat.carrera || '-' }}</td>
+        <td>{{ cuatrimestre(mat.cuatrimestre) }}</td>
+        <td>{{ mat.modalidad || '-' }}</td>
+        <td>
+          <span
+            class="status-badge"
+            [class]="badgeClass(mat.estado)"
+          >
+            {{ label(mat.estado) }}
+          </span>
+        </td>
+        <td>
+          <button
+            class="btn btn-outline btn-sm"
+            (click)="editar.emit(mat)"
+            title="Editar materia"
+          >
+            Editar
+          </button>
+          <button
+            class="btn btn-danger btn-sm"
+            (click)="eliminar.emit(mat)"
+            title="Eliminar materia"
+          >
+            Eliminar
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="materias.length === 0">
+        <td colspan="9" class="empty-state">No hay materias registradas.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

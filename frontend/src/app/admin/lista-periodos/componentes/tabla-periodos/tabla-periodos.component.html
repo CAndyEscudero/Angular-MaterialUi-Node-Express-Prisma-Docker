@@ -1,0 +1,58 @@
+<div class="table-wrapper">
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Fecha Inicio</th>
+        <th>Fecha Fin</th>
+        <th>Cuatrimestre</th>
+        <th>Año Acad.</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of periodos">
+        <td class="cell-name">{{ p.nombre }}</td>
+        <td>{{ p.fecha_inicio | date:'dd/MM/yyyy' }}</td>
+        <td>{{ p.fecha_fin | date:'dd/MM/yyyy' }}</td>
+        <td>{{ cuatrimestre(p.cuatrimestre) }}</td>
+        <td>{{ p.anio_academico || '—' }}</td>
+        <td>
+          <span
+            class="status-badge"
+            [class]="badgeClass(p.activo)"
+          >
+            {{ label(p.activo) }}
+          </span>
+        </td>
+        <td>
+          <button
+            class="btn btn-outline btn-sm"
+            (click)="editar.emit(p)"
+            title="Editar período"
+          >
+            Editar
+          </button>
+          <button
+            class="btn btn-outline btn-sm"
+            (click)="toggleActivo.emit(p)"
+            [title]="p.activo ? 'Desactivar' : 'Activar'"
+          >
+            {{ p.activo ? 'Desactivar' : 'Activar' }}
+          </button>
+          <button
+            class="btn btn-danger btn-sm"
+            (click)="eliminar.emit(p)"
+            title="Eliminar período"
+          >
+            Eliminar
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="periodos.length === 0">
+        <td colspan="7" class="empty-state">No hay períodos de inscripción configurados.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

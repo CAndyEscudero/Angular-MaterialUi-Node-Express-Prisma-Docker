@@ -1,0 +1,402 @@
+<div class="dashboard-shell">
+  <!-- Backdrop for mobile -->
+  <div class="sidebar-backdrop" [class.visible]="menuOpen" (click)="menuOpen = false"></div>
+
+  <!-- Sidebar (light) -->
+  <aside class="sidebar sidebar-docentes" [class.sidebar--open]="menuOpen">
+    <div class="sidebar-brand">
+      <img src="/logo.png" alt="Logo" class="sidebar-logo" />
+      <span class="sidebar-brand-text">Docentes</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">MENÚ</div>
+
+      <a class="nav-item" [class.active]="seccionActiva === 'dashboard'" (click)="seccionActiva = 'dashboard'">
+        <span class="material-symbols-outlined nav-icon">home</span>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a class="nav-item" [class.active]="seccionActiva === 'materias'" (click)="seccionActiva = 'materias'">
+        <span class="material-symbols-outlined nav-icon">book</span>
+        <span class="nav-label">Mis Materias</span>
+      </a>
+      <a class="nav-item" [class.active]="seccionActiva === 'estudiantes'" (click)="seccionActiva = 'estudiantes'">
+        <span class="material-symbols-outlined nav-icon">group</span>
+        <span class="nav-label">Estudiantes</span>
+      </a>
+
+      <div class="sidebar-section-title">OTRO</div>
+
+      <a class="nav-item" [class.active]="seccionActiva === 'anuncios'" (click)="irAAnuncios()">
+        <span class="material-symbols-outlined nav-icon">campaign</span>
+        <span class="nav-label">Anuncios</span>
+      </a>
+      <a class="nav-item" [class.active]="seccionActiva === 'examenes'" (click)="seccionActiva = 'examenes'">
+        <span class="material-symbols-outlined nav-icon">quiz</span>
+        <span class="nav-label">Exámenes</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a class="nav-item sidebar-theme-item" (click)="toggleTheme()" [title]="isDark ? 'Modo claro' : 'Modo oscuro'">
+        <span class="material-symbols-outlined nav-icon">{{ isDark ? 'light_mode' : 'dark_mode' }}</span>
+        <span class="nav-label">{{ isDark ? 'Modo claro' : 'Modo oscuro' }}</span>
+      </a>
+      <a class="nav-item logout" (click)="cerrarSesion()">
+        <span class="material-symbols-outlined nav-icon">logout</span>
+        <span class="nav-label">Cerrar Sesión</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main area -->
+  <div class="main-area">
+    <!-- Top header -->
+    <header class="top-header">
+      <div style="display: flex; align-items: center;">
+        <button class="mobile-hamburger" (click)="toggleMenu()" title="Menú">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+      </div>
+
+      <div class="header-actions">
+        <div style="position: relative;">
+          <button class="header-icon-btn" title="Notificaciones" (click)="togglePanelNotifs(); $event.stopPropagation()">
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="notif-badge" *ngIf="notifsNoLeidas > 0">{{ notifsNoLeidas > 99 ? '99+' : notifsNoLeidas }}</span>
+          </button>
+          <app-panel-notificaciones *ngIf="panelNotifsAbierto" (notificacionSeleccionada)="onNotificacionSeleccionada($event)"></app-panel-notificaciones>
+        </div>
+        <button class="header-icon-btn" title="Mensajes">
+          <span class="material-symbols-outlined">mail</span>
+        </button>
+        <div class="header-user">
+          <img src="/avatar.png" alt="Avatar" class="header-avatar" />
+          <span class="header-user-name">Profesor</span>
+          <span class="user-badge profesor-badge">Profesor</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="content-area">
+      <!-- Dashboard -->
+      <section *ngIf="seccionActiva === 'dashboard'" class="content-section" aria-label="Panel de Docentes">
+        <h1 class="sr-only">Panel de Docentes</h1>
+
+        <!-- KPI cards -->
+        <div class="quick-stats">
+          <app-dashboard-stat-card
+            *ngFor="let stat of stats"
+            [icon]="stat.icon"
+            [value]="stat.value"
+            [label]="stat.label"
+            [variant]="stat.variant"
+            [clickable]="!!stat.action"
+            (click)="stat.action ? stat.action() : null"
+          ></app-dashboard-stat-card>
+        </div>
+
+        <!-- Anuncios recientes — sección destacada -->
+        <app-anuncios-recientes (verTodos)="irAAnuncios()"></app-anuncios-recientes>
+
+        <!-- Two-column layout -->
+        <div class="dashboard-grid" style="margin-top: var(--space-lg);">
+          <div class="left-column">
+            <div class="info-panel">
+              <div class="info-panel-header">
+                <h3>Mis Materias</h3>
+                <a class="see-all" (click)="seccionActiva = 'materias'">Ver todas</a>
+              </div>
+              <div class="info-panel-item" *ngFor="let mat of materiasLista">
+                <div class="info-panel-item-icon" style="background: var(--pastel-blue);">
+                  <span class="material-symbols-outlined">book</span>
+                </div>
+                <div class="info-panel-item-content">
+                  <p class="info-panel-item-title">{{ mat.nombre }}</p>
+                  <p class="info-panel-item-sub">{{ mat.codigo }} · {{ mat.inscriptos_count || 0 }} estudiantes</p>
+                </div>
+              </div>
+              <div class="info-panel-item" *ngIf="materiasLista.length === 0">
+                <p class="info-panel-item-sub">No tenés materias asignadas.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="right-column">
+            <!-- Pending grades panel -->
+            <div class="info-panel">
+              <div class="info-panel-header">
+                <h3>Notas Pendientes por Materia</h3>
+              </div>
+              <div class="info-panel-item" *ngFor="let mat of materiasLista">
+                <div class="info-panel-item-icon" [style.background]="mat.notas_pendientes > 0 ? 'var(--pastel-pink)' : 'var(--pastel-green)'">
+                  <span class="material-symbols-outlined">grading</span>
+                </div>
+                <div class="info-panel-item-content">
+                  <p class="info-panel-item-title">{{ mat.nombre }}</p>
+                  <p class="info-panel-item-sub">
+                    {{ mat.notas_pendientes > 0 ? mat.notas_pendientes + ' estudiantes sin nota' : 'Completo' }}
+                  </p>
+                </div>
+                <span class="info-panel-item-time" *ngIf="mat.notas_pendientes > 0" style="color: var(--pastel-pink-text); font-weight: 600;">
+                  {{ mat.notas_pendientes }}
+                </span>
+              </div>
+              <div class="info-panel-item" *ngIf="materiasLista.length === 0">
+                <p class="info-panel-item-sub">No hay materias asignadas.</p>
+              </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="info-panel">
+              <div class="info-panel-header">
+                <h3>Resumen</h3>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Materias</span>
+                <span class="summary-value">{{ totalMaterias }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Estudiantes Totales</span>
+                <span class="summary-value">{{ totalEstudiantes }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Notas Pendientes</span>
+                <span class="summary-value" [class.text-red]="notasPendientes > 0" [class.text-green]="notasPendientes === 0">
+                  {{ notasPendientes }}
+                </span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Promedio x Materia</span>
+                <span class="summary-value">{{ totalMaterias > 0 ? (totalEstudiantes / totalMaterias).toFixed(1) : '—' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mis Materias -->
+      <section *ngIf="seccionActiva === 'materias'" class="content-section">
+        <app-materias-asignadas (materiaSeleccionada)="alSeleccionarMateria($event)"></app-materias-asignadas>
+      </section>
+
+      <!-- Estudiantes / Grade Entry -->
+      <section *ngIf="seccionActiva === 'estudiantes'" class="content-section">
+        <div class="inline-subsection">
+          <app-materias-asignadas (materiaSeleccionada)="alSeleccionarMateria($event)"></app-materias-asignadas>
+        </div>
+        <app-carga-notas [materiaId]="materiaSeleccionadaId"></app-carga-notas>
+      </section>
+
+      <!-- Anuncios (profesor) -->
+      <section *ngIf="seccionActiva === 'anuncios'" class="content-section">
+        <div class="section-header">
+          <h2>Anuncios</h2>
+          <button class="btn-primary" (click)="toggleFormAnuncio()" *ngIf="!mostrarFormAnuncio">
+            + Nuevo Anuncio
+          </button>
+        </div>
+
+        <!-- Feedback -->
+        <div class="alert alert-success" *ngIf="mensajeExito">
+          <span class="material-symbols-outlined">check_circle</span>
+          {{ mensajeExito }}
+        </div>
+        <div class="alert alert-error" *ngIf="mensajeError">
+          <span class="material-symbols-outlined">error</span>
+          {{ mensajeError }}
+        </div>
+
+        <!-- Create form -->
+        <div class="create-form" *ngIf="mostrarFormAnuncio">
+          <h3>Nuevo Anuncio por Materia</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Materia *</label>
+              <select [(ngModel)]="formAnuncio.materia_id">
+                <option [value]="null" disabled>Seleccioná una materia</option>
+                <option *ngFor="let m of docenteMaterias" [value]="m.id">
+                  {{ m.nombre }} ({{ m.codigo }})
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Título *</label>
+              <input type="text" [(ngModel)]="formAnuncio.titulo" placeholder="Título del anuncio" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Contenido *</label>
+              <textarea
+                [(ngModel)]="formAnuncio.contenido"
+                placeholder="Escribí el contenido del anuncio..."
+                rows="4"
+              ></textarea>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+              <input type="checkbox" id="publicar-directo" [(ngModel)]="formAnuncio.publicar" />
+              <label for="publicar-directo" style="margin: 0;">Publicar directamente (alumnos recibirán notificación)</label>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-outline" (click)="toggleFormAnuncio()">Cancelar</button>
+            <button class="btn-primary" (click)="guardarAnuncioMateria()">Crear Anuncio</button>
+          </div>
+        </div>
+
+        <!-- Mis anuncios (profesor) — own materia announcements management -->
+        <div class="mis-anuncios-section" *ngIf="docenteAnuncios.length > 0">
+          <h3>Mis Anuncios</h3>
+          <div class="table-wrapper">
+            <table class="styled-table">
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Materia</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let a of docenteAnuncios">
+                  <td class="cell-name">{{ a.titulo }}</td>
+                  <td>{{ a.materia_nombre || '—' }}</td>
+                  <td>
+                    <span [class]="badgeClass(a.estado)">{{ estadoLabel(a.estado) }}</span>
+                  </td>
+                  <td>{{ a.actualizado_en | date:'dd/MM/yyyy HH:mm' }}</td>
+                  <td class="cell-actions">
+                    <button class="btn btn-sm btn-success" *ngIf="a.estado === 'borrador' || a.estado === 'publicado'"
+                      (click)="publicarAnuncio(a.id)" title="Publicar">
+                      <span class="material-symbols-outlined" style="font-size: 16px;">publish</span>
+                    </button>
+                    <button class="btn btn-sm btn-outline" *ngIf="a.estado === 'publicado'"
+                      (click)="archivarAnuncio(a.id)" title="Archivar">
+                      <span class="material-symbols-outlined" style="font-size: 16px;">archive</span>
+                    </button>
+                    <button class="btn btn-sm btn-danger"
+                      (click)="eliminarAnuncio(a.id)" title="Eliminar">
+                      <span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Public announcements feed (read-only) -->
+        <app-lista-anuncios-publicos [highlightId]="anuncioHighlightId"></app-lista-anuncios-publicos>
+      </section>
+
+      <!-- Exámenes (profesor) -->
+      <section *ngIf="seccionActiva === 'examenes'" class="content-section">
+        <div class="section-header">
+          <h2>Gestión de Exámenes</h2>
+          <button class="btn-primary" (click)="abrirNuevoExamen()" *ngIf="!mostrarFormularioExamen">
+            + Nuevo Examen
+          </button>
+        </div>
+
+        <!-- Examen form -->
+        <div class="create-form" *ngIf="mostrarFormularioExamen">
+          <h3>{{ examenEditar ? 'Editar Examen' : 'Nuevo Examen' }}</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Materia</label>
+              <select #materiaSelect>
+                <option *ngFor="let m of materiasParaExamen" [value]="m.id" [selected]="examenEditar?.materia_id === m.id">
+                  {{ m.nombre }} ({{ m.codigo }})
+                </option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Nombre del Examen</label>
+              <input type="text" #nombreInput [value]="examenEditar?.nombre || ''" placeholder="Ej: Parcial 1" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tipo</label>
+              <select #tipoSelect>
+                <option value="parcial" [selected]="examenEditar?.tipo === 'parcial'">Parcial</option>
+                <option value="final" [selected]="examenEditar?.tipo === 'final'">Final</option>
+                <option value="recuperatorio" [selected]="examenEditar?.tipo === 'recuperatorio'">Recuperatorio</option>
+                <option value="otro" [selected]="examenEditar?.tipo === 'otro'">Otro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Fecha</label>
+              <input type="date" #fechaInput [value]="examenEditar?.fecha || ''" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Hora</label>
+              <input type="time" #horaInput [value]="examenEditar?.hora || ''" />
+            </div>
+            <div class="form-group">
+              <label>Aula</label>
+              <input type="text" #aulaInput [value]="examenEditar?.aula || ''" placeholder="Ej: Aula 205" />
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: 16px;">
+            <button class="btn-outline" (click)="cancelarFormularioExamen()">Cancelar</button>
+            <button class="btn-primary" (click)="guardarExamen({
+              materia_id: +materiaSelect.value,
+              nombre: nombreInput.value,
+              tipo: tipoSelect.value,
+              fecha: fechaInput.value,
+              hora: horaInput.value || null,
+              aula: aulaInput.value || null
+            })">
+              {{ examenEditar ? 'Guardar Cambios' : 'Crear Examen' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Exams table -->
+        <div class="table-wrapper">
+          <table class="styled-table" *ngIf="misExamenes.length > 0">
+            <thead>
+              <tr>
+                <th>Materia</th>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Aula</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ex of misExamenes">
+                <td class="cell-name">{{ ex.materia_nombre }}</td>
+                <td>{{ ex.nombre }}</td>
+                <td><span class="tipo-badge">{{ ex.tipo }}</span></td>
+                <td>{{ ex.fecha | date:'dd/MM/yyyy' }}</td>
+                <td>{{ ex.hora || '—' }}</td>
+                <td>{{ ex.aula || '—' }}</td>
+                <td class="cell-actions">
+                  <button class="btn btn-sm btn-outline" (click)="abrirEditarExamen(ex)" title="Editar">✏️ Editar</button>
+                  <button class="btn btn-sm btn-danger" (click)="eliminarExamen(ex.id)" title="Eliminar" style="margin-left: 4px;">🗑️ Eliminar</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="empty-state" *ngIf="misExamenes.length === 0 && !mostrarFormularioExamen">
+            <p>No hay exámenes registrados para tus materias.</p>
+            <button class="btn-primary" (click)="abrirNuevoExamen()" style="margin-top: 12px;">Crear primer examen</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>

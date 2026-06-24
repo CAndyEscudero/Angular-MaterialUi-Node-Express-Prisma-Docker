@@ -1,0 +1,20 @@
+<div
+  class="stat-card"
+  [class.stat-pastel-lavender]="variant === 'lavender'"
+  [class.stat-pastel-yellow]="variant === 'yellow'"
+  [class.stat-pastel-blue]="variant === 'blue'"
+  [class.stat-pastel-pink]="variant === 'pink'"
+  [class.stat-pastel-green]="variant === 'green'"
+  [class.stat-pastel-orange]="variant === 'orange'"
+  [class.stat-pastel-teal]="variant === 'teal'"
+  [class.stat-clickable]="clickable"
+  [attr.aria-label]="ariaLabel || label"
+>
+  <div class="stat-icon-wrapper">
+    <span class="material-symbols-outlined">{{ icon }}</span>
+  </div>
+  <div class="stat-info">
+    <span class="stat-number">{{ value }}</span>
+    <span class="stat-label">{{ label }}</span>
+  </div>
+</div>

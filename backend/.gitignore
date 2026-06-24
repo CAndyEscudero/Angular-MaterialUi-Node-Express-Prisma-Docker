@@ -1,6 +1,8 @@
 node_modules
 
+dist
+
 .env
 
-
-/src/generated/prisma
+# Uploaded documents
+uploads/inscripciones-carrera/*

@@ -1,0 +1,32 @@
+<div class="materias-asignadas">
+  <div class="section-header">
+    <h2>Mis Materias</h2>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Materia</th>
+          <th>Código</th>
+          <th>Seleccionar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let mat of materias" [class.selected]="materiaSeleccionadaId === mat.id">
+          <td>{{ mat.nombre }}</td>
+          <td>{{ mat.codigo }}</td>
+          <td>
+            <button class="btn btn-outline btn-sm" (click)="seleccionarMateria(mat.id)"
+                    [class.btn-active]="materiaSeleccionadaId === mat.id">
+              {{ materiaSeleccionadaId === mat.id ? 'Seleccionado' : 'Ver Estudiantes' }}
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="materias.length === 0">
+          <td colspan="3" class="empty-state">No tenés materias asignadas.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

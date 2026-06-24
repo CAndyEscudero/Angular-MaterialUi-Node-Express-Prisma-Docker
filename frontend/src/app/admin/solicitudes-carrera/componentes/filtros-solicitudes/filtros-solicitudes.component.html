@@ -1,0 +1,30 @@
+<div class="filter-tabs">
+  <button
+    class="filter-btn"
+    [class.active]="filtroActivo === ''"
+    (click)="filtroCambiado.emit('')"
+  >
+    Todas
+  </button>
+  <button
+    class="filter-btn"
+    [class.active]="filtroActivo === 'pendiente'"
+    (click)="filtroCambiado.emit('pendiente')"
+  >
+    Pendientes
+  </button>
+  <button
+    class="filter-btn"
+    [class.active]="filtroActivo === 'aprobada'"
+    (click)="filtroCambiado.emit('aprobada')"
+  >
+    Aprobadas
+  </button>
+  <button
+    class="filter-btn"
+    [class.active]="filtroActivo === 'rechazada'"
+    (click)="filtroCambiado.emit('rechazada')"
+  >
+    Rechazadas
+  </button>
+</div>

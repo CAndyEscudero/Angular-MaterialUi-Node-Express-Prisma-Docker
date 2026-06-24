@@ -1,0 +1,28 @@
+<div class="lista-carreras">
+  <div class="section-header">
+    <h2>Carreras</h2>
+    <button class="btn btn-primary" (click)="toggleForm()">
+      {{ mostrarFormulario ? 'Cancelar' : '+ Nueva Carrera' }}
+    </button>
+  </div>
+
+  <!-- Feedback messages -->
+  <div class="alert alert-success" *ngIf="mensajeExito">{{ mensajeExito }}</div>
+
+  <!-- Create / Edit form -->
+  <app-formulario-carrera
+    *ngIf="mostrarFormulario"
+    [modelo]="modeloFormulario"
+    [editandoId]="editandoId"
+    [mensajeError]="mensajeError"
+    (guardar)="guardar()"
+    (cancelar)="toggleForm()"
+  ></app-formulario-carrera>
+
+  <!-- Carrera list table -->
+  <app-tabla-carreras
+    [carreras]="carreras"
+    (editar)="editarCarrera($event)"
+    (alternarEstado)="confirmarDesactivar($event)"
+  ></app-tabla-carreras>
+</div>

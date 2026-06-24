@@ -1,0 +1,26 @@
+<div class="lista-usuarios">
+  <div class="section-header">
+    <h2>{{ tituloListado }}</h2>
+    <button class="btn btn-primary" (click)="toggleForm()">
+      {{ mostrarFormulario ? 'Cancelar' : '+ Nuevo Usuario' }}
+    </button>
+  </div>
+
+  <!-- Feedback messages -->
+  <div class="alert alert-success" *ngIf="mensajeExito">{{ mensajeExito }}</div>
+
+  <!-- Create user form -->
+  <app-formulario-usuario
+    *ngIf="mostrarFormulario"
+    [modelo]="modeloFormulario"
+    [mensajeError]="mensajeError"
+    (guardar)="crearUsuario()"
+    (cancelar)="toggleForm()"
+  ></app-formulario-usuario>
+
+  <!-- User list table -->
+  <app-tabla-usuarios
+    [usuarios]="usuariosFiltrados"
+    (eliminar)="confirmarEliminar($event)"
+  ></app-tabla-usuarios>
+</div>

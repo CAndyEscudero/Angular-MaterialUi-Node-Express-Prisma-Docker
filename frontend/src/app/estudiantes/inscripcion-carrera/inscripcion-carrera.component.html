@@ -1,0 +1,189 @@
+<div class="inscripcion-carrera">
+  <div class="section-header">
+    <h2>Inscripción a Carrera</h2>
+  </div>
+
+  <!-- Success message -->
+  <div class="alert alert-success" *ngIf="mensajeExito">{{ mensajeExito }}</div>
+
+  <!-- Loading state -->
+  <div class="loading-state" *ngIf="loading && !solicitud && !modoSolicitud">
+    <p>Cargando información...</p>
+  </div>
+
+  <!-- Current application status -->
+  <div class="solicitud-actual" *ngIf="solicitud && !modoSolicitud && !loading">
+    <div class="status-card">
+      <div class="status-header">
+        <h3>Estado de tu Solicitud</h3>
+        <span
+          class="status-badge"
+          [class]="estadoBadgeClass(solicitud.estado)"
+        >
+          {{ estadoLabel(solicitud.estado) }}
+        </span>
+      </div>
+
+      <div class="status-details">
+        <div class="detail-row">
+          <span class="detail-label">Carrera:</span>
+          <span class="detail-value">{{ solicitud.carrera_nombre }} ({{ solicitud.carrera_codigo }})</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Fecha de solicitud:</span>
+          <span class="detail-value">{{ solicitud.fecha_solicitud | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="detail-row" *ngIf="solicitud.fecha_revision">
+          <span class="detail-label">Fecha de revisión:</span>
+          <span class="detail-value">{{ solicitud.fecha_revision | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="detail-row" *ngIf="solicitud.estado === 'aprobada' && solicitud.alumno_legajo">
+          <span class="detail-label">Legajo:</span>
+          <span class="detail-value legajo">{{ solicitud.alumno_legajo }}</span>
+        </div>
+        <div class="detail-row" *ngIf="solicitud.motivo_rechazo">
+          <span class="detail-label">Motivo:</span>
+          <span class="detail-value motivo">{{ solicitud.motivo_rechazo }}</span>
+        </div>
+      </div>
+
+      <div class="status-documents" *ngIf="solicitud.documentos && solicitud.documentos.length > 0">
+        <h4>Documentos adjuntos</h4>
+        <ul class="doc-list">
+          <li *ngFor="let doc of solicitud.documentos">
+            <span class="doc-tipo">{{ doc.tipo_documento.replace('_', ' ') }}</span>
+            <span class="doc-fecha">{{ doc.fecha_subida | date:'short' }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- No application yet -->
+  <div class="sin-solicitud" *ngIf="!solicitud && !loading && !modoSolicitud">
+    <div class="placeholder-card">
+      <h3>No tienes una solicitud activa</h3>
+      <p>
+        Para inscribirte en una carrera, debes completar el formulario de
+        inscripción y adjuntar la documentación requerida.
+      </p>
+      <button class="btn btn-primary" (click)="iniciarSolicitud()">
+        Solicitar Inscripción
+      </button>
+    </div>
+  </div>
+
+  <!-- Approved: show message -->
+  <div class="aprobada-card" *ngIf="estaAprobada && !modoSolicitud">
+    <div class="success-card">
+      <h3>¡Inscripción Aprobada!</h3>
+      <p *ngIf="solicitud?.alumno_legajo">
+        Tu legajo: <strong>{{ solicitud?.alumno_legajo }}</strong>
+      </p>
+      <p>
+        Ya puedes inscribirte en las materias de tu carrera.
+        Dirígete a la sección de Materias Disponibles para comenzar.
+      </p>
+    </div>
+  </div>
+
+  <!-- Rejected: can re-apply -->
+  <div class="reintentar-card" *ngIf="puedeSolicitar && solicitud && solicitud.estado === 'rechazada' && !modoSolicitud">
+    <button class="btn btn-primary" (click)="iniciarSolicitud()">
+      Volver a Solicitar
+    </button>
+  </div>
+
+  <!-- Application form -->
+  <div class="solicitud-form" *ngIf="modoSolicitud">
+    <h3>Formulario de Inscripción a Carrera</h3>
+
+    <p class="form-info">
+      Completá todos los campos obligatorios y adjuntá la documentación
+      requerida para procesar tu inscripción.
+    </p>
+
+    <!-- Error message -->
+    <div class="alert alert-error" *ngIf="mensajeError">{{ mensajeError }}</div>
+
+    <!-- Carrera selection -->
+    <div class="form-group">
+      <label for="car-carrera">Carrera *</label>
+      <select
+        id="car-carrera"
+        [(ngModel)]="carreraSeleccionada"
+        class="form-select"
+      >
+        <option [value]="null" disabled>Seleccioná una carrera</option>
+        <option *ngFor="let c of carreras" [value]="c.id">
+          {{ c.nombre }} ({{ c.codigo }})
+        </option>
+      </select>
+    </div>
+
+    <!-- Document uploads -->
+    <div class="documentos-section">
+      <h4>Documentación Requerida</h4>
+
+      <div class="doc-upload-row" *ngFor="let item of archivos">
+        <div class="doc-info">
+          <span class="doc-label">{{ item.nombre }} *</span>
+          <span class="doc-hint" *ngIf="item.tipo !== 'foto_carnet'">PDF o imagen (máx. 5MB)</span>
+          <span class="doc-hint" *ngIf="item.tipo === 'foto_carnet'">Imagen (máx. 5MB)</span>
+        </div>
+        <div class="doc-input-group">
+          <input
+            type="file"
+            [id]="'file-' + item.tipo"
+            accept=".jpg,.jpeg,.png,.pdf"
+            (change)="onFileSelected(item.tipo, $event)"
+            class="file-input"
+          />
+          <label [for]="'file-' + item.tipo" class="btn btn-outline btn-sm file-label">
+            {{ getArchivoNombre(item.tipo) ? 'Cambiar' : 'Seleccionar' }}
+          </label>
+          <span class="file-name" *ngIf="getArchivoNombre(item.tipo)">
+            {{ getArchivoNombre(item.tipo) }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Extra document -->
+      <div class="doc-upload-row">
+        <div class="doc-info">
+          <span class="doc-label">Otro documento (opcional)</span>
+          <span class="doc-hint">PDF o imagen (máx. 5MB)</span>
+        </div>
+        <div class="doc-input-group">
+          <input
+            type="file"
+            id="file-otro"
+            accept=".jpg,.jpeg,.png,.pdf"
+            (change)="onFileSelected('otro', $event)"
+            class="file-input"
+          />
+          <label for="file-otro" class="btn btn-outline btn-sm file-label">
+            {{ archivoOtro ? 'Cambiar' : 'Seleccionar' }}
+          </label>
+          <span class="file-name" *ngIf="archivoOtro">
+            {{ archivoOtro.name }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button class="btn btn-outline" (click)="cancelarSolicitud()">
+        Cancelar
+      </button>
+      <button
+        class="btn btn-primary"
+        (click)="enviarSolicitud()"
+        [disabled]="loading"
+      >
+        {{ loading ? 'Enviando...' : 'Enviar Solicitud' }}
+      </button>
+    </div>
+  </div>
+</div>
